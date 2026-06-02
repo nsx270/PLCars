@@ -23,6 +23,21 @@ Este é um projeto de aplicação web para gerenciamento de vendas de veículos 
 
 ---
 
+## 📊 Diagramas do Projeto
+
+Os diagramas abaixo detalham a arquitetura estática e dinâmica do sistema:
+
+### 1. Diagrama de Classes Geral
+![Diagrama de Classes](img/diagrama_classes.png)
+
+### 2. Diagrama de Sequência (Venda com Decorator)
+![Diagrama de Sequência](img/diagrama_sequencia.png)
+
+### 3. Diagrama do Padrão Decorator
+![Diagrama do Decorator](img/diagrama_decorator.png)
+
+---
+
 ## 🚀 Como Executar o Projeto Localmente
 
 ### 1. Pré-requisitos
