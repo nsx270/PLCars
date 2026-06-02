@@ -18,7 +18,7 @@ import java.util.List;
 import model.Veiculo;
 import util.FabricaConexao;
 
-public class VeiculoDAO {
+public class VeiculoDAO implements IVeiculoDAO {
 
     // Método para inserir um novo veículo
     public boolean inserir(Veiculo veiculo, int idConcessionaria) {

@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import model.Funcionario;
 import util.FabricaConexao;
 
-public class FuncionarioDAO {
+public class FuncionarioDAO implements IFuncionarioDAO {
 
     // 1. Novo método de login que verifica ID e Senha
     public Funcionario fazerLogin(int id, String senha) {

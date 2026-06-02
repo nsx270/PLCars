@@ -18,7 +18,7 @@ import model.Cliente;
 import model.Venda;
 import util.FabricaConexao;
 
-public class VendaDAO {
+public class VendaDAO implements IVendaDAO {
 
     public boolean registrarVendaCompleta(Venda venda, Cliente cliente) {
         String sqlCliente = "INSERT INTO cliente (nome, cpf, endereco) VALUES (?, ?, ?)";
