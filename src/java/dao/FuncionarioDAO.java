@@ -20,14 +20,12 @@ public class FuncionarioDAO implements IFuncionarioDAO {
 
     // 1. Novo método de login que verifica ID e Senha
     public Funcionario fazerLogin(int id, String senha) {
-        String sql = "SELECT * FROM funcionario WHERE id = ? AND senha = ?";
-        
-        try (Connection conn = FabricaConexao.getConexao(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection con = FabricaConexao.getConexao(); 
+             PreparedStatement comando = con.prepareStatement("SELECT * FROM funcionario WHERE id = ? AND senha = ?")) {
             
-            stmt.setInt(1, id);
-            stmt.setString(2, senha);
-            ResultSet rs = stmt.executeQuery();
+            comando.setInt(1, id);
+            comando.setString(2, senha);
+            ResultSet rs = comando.executeQuery();
             
             if (rs.next()) {
                 Funcionario f = new Funcionario();
@@ -46,17 +44,15 @@ public class FuncionarioDAO implements IFuncionarioDAO {
 
     // 2. Inserir funcionário
     public boolean inserir(Funcionario funcionario) {
-        String sql = "INSERT INTO funcionario (nome, funcao, senha, comissao_vendas) VALUES (?, ?, ?, ?)";
-        
-        try (Connection conn = FabricaConexao.getConexao(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection con = FabricaConexao.getConexao(); 
+             PreparedStatement comando = con.prepareStatement("INSERT INTO funcionario (nome, funcao, senha, comissao_vendas) VALUES (?, ?, ?, ?)")) {
             
-            stmt.setString(1, funcionario.getNome());
-            stmt.setString(2, funcionario.getFuncao());
-            stmt.setString(3, funcionario.getSenha()); // Inserindo a senha
-            stmt.setDouble(4, funcionario.getComissaoVendas());
+            comando.setString(1, funcionario.getNome());
+            comando.setString(2, funcionario.getFuncao());
+            comando.setString(3, funcionario.getSenha()); // Inserindo a senha
+            comando.setDouble(4, funcionario.getComissaoVendas());
             
-            stmt.executeUpdate();
+            comando.executeUpdate();
             return true;
         } catch (SQLException e) {
             System.err.println("Erro ao inserir funcionário: " + e.getMessage());
@@ -67,15 +63,13 @@ public class FuncionarioDAO implements IFuncionarioDAO {
     // 3. Atualiza a comissão do funcionário
     public boolean adicionarComissao(int idFuncionario, double valorVenda) {
         double comissao = valorVenda * 0.05; // 5% do valor
-        String sql = "UPDATE funcionario SET comissao_vendas = comissao_vendas + ? WHERE id = ?";
-        
-        try (Connection conn = FabricaConexao.getConexao(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection con = FabricaConexao.getConexao(); 
+             PreparedStatement comando = con.prepareStatement("UPDATE funcionario SET comissao_vendas = comissao_vendas + ? WHERE id = ?")) {
             
-            stmt.setDouble(1, comissao);
-            stmt.setInt(2, idFuncionario);
+            comando.setDouble(1, comissao);
+            comando.setInt(2, idFuncionario);
             
-            stmt.executeUpdate();
+            comando.executeUpdate();
             return true;
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar comissão: " + e.getMessage());

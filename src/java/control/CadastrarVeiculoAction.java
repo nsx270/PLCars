@@ -19,7 +19,7 @@ public class CadastrarVeiculoAction implements ICommand {
     @Override
     public String executar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-        // 1. Coleta os dados do formulário
+        // Coleta os dados do formulário
         String marca = request.getParameter("marca");
         String modelo = request.getParameter("modelo");
         int anoFab = Integer.parseInt(request.getParameter("anoFabricacao"));
@@ -33,7 +33,7 @@ public class CadastrarVeiculoAction implements ICommand {
         String imagem = request.getParameter("imagemPlaceholder");
         int idConcessionaria = Integer.parseInt(request.getParameter("idConcessionaria"));
 
-        // 2. USO DO PADRÃO BUILDER PARA CRIAR O OBJETO COM 12 ATRIBUTOS
+        // Cria o objeto Veiculo usando o Builder
         Veiculo novoVeiculo = Veiculo.getBuilder()
                 .comMarca(marca)
                 .comModelo(modelo)
@@ -48,14 +48,14 @@ public class CadastrarVeiculoAction implements ICommand {
                 .daLoja(idConcessionaria)
                 .constroi();
 
-        // 3. Salva no banco de dados
+        // Salva no banco de dados
         VeiculoDAO dao = new VeiculoDAO();
         dao.inserir(novoVeiculo, idConcessionaria);
 
-        // 4. Após cadastrar, busca a lista atualizada de todos os veículos
+        // Busca a lista atualizada de todos os veículos
         request.setAttribute("listaVeiculos", dao.listarTodos());
         
-        // 5. Retorna para a página de gestão (dashboard)
+        // Retorna para a página de gestão
         return "pagina4.jsp";
     }
 }

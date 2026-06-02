@@ -80,7 +80,7 @@ public class Veiculo implements IVeiculo {
         public VeiculoBuilder comDescricao(String descricao) { this.veiculo.descricao = descricao; return this; }
         public VeiculoBuilder comImagem(String imagem) { this.veiculo.imagemPlaceholder = imagem; return this; }
         
-        // Método novo no Builder para associar a loja
+        // Associa a concessionária
         public VeiculoBuilder daLoja(int idConcessionaria) { 
             this.veiculo.idConcessionaria = idConcessionaria; return this; 
         }

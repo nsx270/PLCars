@@ -44,15 +44,15 @@ public class ComprarVeiculoAction implements ICommand {
         String cpfCli = request.getParameter("cpfCliente");
         String endCli = request.getParameter("enderecoCliente");
 
-        // 1. Recupera os opcionais selecionados na tela (Design Pattern: Decorator)
+        // Recupera os opcionais selecionados
         String opcionalCouro = request.getParameter("opcionalCouro");
         String opcionalBlindagem = request.getParameter("opcionalBlindagem");
 
-        // 2. Busca o veículo base e inicia a decoração
+        // Busca o veículo base
         Veiculo veiculoBase = veiculoDAO.buscarPorId(idVeiculo);
         model.decorator.IVeiculo carroDecorado = veiculoBase;
 
-        // 3. Aplica os decorators dinamicamente (nenhum, um ou ambos)
+        // Aplica os opcionais (nenhum, um ou ambos)
         if ("sim".equals(opcionalCouro)) {
             carroDecorado = new model.decorator.BancosDeCouroDecorator(carroDecorado);
         }
@@ -60,7 +60,7 @@ public class ComprarVeiculoAction implements ICommand {
             carroDecorado = new model.decorator.BlindagemDecorator(carroDecorado);
         }
 
-        // 4. Obtém o preço final calculado dinamicamente pelo padrão Decorator
+        // Obtém o preço final calculado
         double valorFinal = carroDecorado.getPreco();
 
         Cliente cliente = new Cliente(0, nomeCli, cpfCli, endCli);
@@ -81,7 +81,7 @@ public class ComprarVeiculoAction implements ICommand {
             new FuncionarioDAO().adicionarComissao(idFuncionario, valorFinal);
             veiculoDAO.marcarComoVendido(idVeiculo);
             
-            // Monta mensagem personalizada exibindo os opcionais inclusos
+            // Monta mensagem de confirmação com opcionais inclusos
             String opcionaisAdicionados = "";
             if ("sim".equals(opcionalCouro)) opcionaisAdicionados += "[Bancos de Couro] ";
             if ("sim".equals(opcionalBlindagem)) opcionaisAdicionados += "[Blindagem]";

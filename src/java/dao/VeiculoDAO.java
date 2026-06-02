@@ -22,25 +22,23 @@ public class VeiculoDAO implements IVeiculoDAO {
 
     // Método para inserir um novo veículo
     public boolean inserir(Veiculo veiculo, int idConcessionaria) {
-        String sql = "INSERT INTO veiculo (marca, modelo, ano_fabricacao, ano_modelo, quilometragem, cor, combustivel, placa, preco, descricao, imagem_placeholder, id_concessionaria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
-        try (Connection conn = FabricaConexao.getConexao(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection con = FabricaConexao.getConexao(); 
+             PreparedStatement comando = con.prepareStatement("INSERT INTO veiculo (marca, modelo, ano_fabricacao, ano_modelo, quilometragem, cor, combustivel, placa, preco, descricao, imagem_placeholder, id_concessionaria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             
-            stmt.setString(1, veiculo.getMarca());
-            stmt.setString(2, veiculo.getModelo());
-            stmt.setInt(3, veiculo.getAnoFabricacao());
-            stmt.setInt(4, veiculo.getAnoModelo());
-            stmt.setDouble(5, veiculo.getQuilometragem());
-            stmt.setString(6, veiculo.getCor());
-            stmt.setString(7, veiculo.getCombustivel());
-            stmt.setString(8, veiculo.getPlaca());
-            stmt.setDouble(9, veiculo.getPreco());
-            stmt.setString(10, veiculo.getDescricao());
-            stmt.setString(11, veiculo.getImagemPlaceholder());
-            stmt.setInt(12, idConcessionaria);
+            comando.setString(1, veiculo.getMarca());
+            comando.setString(2, veiculo.getModelo());
+            comando.setInt(3, veiculo.getAnoFabricacao());
+            comando.setInt(4, veiculo.getAnoModelo());
+            comando.setDouble(5, veiculo.getQuilometragem());
+            comando.setString(6, veiculo.getCor());
+            comando.setString(7, veiculo.getCombustivel());
+            comando.setString(8, veiculo.getPlaca());
+            comando.setDouble(9, veiculo.getPreco());
+            comando.setString(10, veiculo.getDescricao());
+            comando.setString(11, veiculo.getImagemPlaceholder());
+            comando.setInt(12, idConcessionaria);
             
-            stmt.executeUpdate();
+            comando.executeUpdate();
             return true;
         } catch (SQLException e) {
             System.err.println("Erro ao inserir veículo: " + e.getMessage());
@@ -51,13 +49,11 @@ public class VeiculoDAO implements IVeiculoDAO {
     // Listar veículos de uma loja específica
     public List<Veiculo> listarPorConcessionaria(int idConcessionaria) {
         List<Veiculo> lista = new ArrayList<>();
-        String sql = "SELECT * FROM veiculo WHERE id_concessionaria = ?";
-        
-        try (Connection conn = FabricaConexao.getConexao(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection con = FabricaConexao.getConexao(); 
+             PreparedStatement comando = con.prepareStatement("SELECT * FROM veiculo WHERE id_concessionaria = ?")) {
             
-            stmt.setInt(1, idConcessionaria);
-            ResultSet rs = stmt.executeQuery();
+            comando.setInt(1, idConcessionaria);
+            ResultSet rs = comando.executeQuery();
             
             while (rs.next()) {
                 lista.add(extrairVeiculoDoResultSet(rs));
@@ -71,11 +67,9 @@ public class VeiculoDAO implements IVeiculoDAO {
     // Listar TODOS os veículos
     public List<Veiculo> listarTodos() {
         List<Veiculo> lista = new ArrayList<>();
-        String sql = "SELECT * FROM veiculo";
-        
-        try (Connection conn = FabricaConexao.getConexao(); 
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = FabricaConexao.getConexao(); 
+             PreparedStatement comando = con.prepareStatement("SELECT * FROM veiculo");
+             ResultSet rs = comando.executeQuery()) {
             
             while (rs.next()) {
                 lista.add(extrairVeiculoDoResultSet(rs));
@@ -88,12 +82,11 @@ public class VeiculoDAO implements IVeiculoDAO {
     
     // Método para checar se o carro pode ser vendido
     public boolean isDisponivel(int id) {
-        String sql = "SELECT status FROM veiculo WHERE id = ?";
-        try (Connection conn = FabricaConexao.getConexao(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection con = FabricaConexao.getConexao(); 
+             PreparedStatement comando = con.prepareStatement("SELECT status FROM veiculo WHERE id = ?")) {
             
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
+            comando.setInt(1, id);
+            ResultSet rs = comando.executeQuery();
             
             if (rs.next()) {
                 return "DISPONÍVEL".equalsIgnoreCase(rs.getString("status"));
@@ -106,13 +99,11 @@ public class VeiculoDAO implements IVeiculoDAO {
 
     // Buscar apenas um veículo
     public Veiculo buscarPorId(int id) {
-        String sql = "SELECT * FROM veiculo WHERE id = ?";
-        
-        try (Connection conn = FabricaConexao.getConexao(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection con = FabricaConexao.getConexao(); 
+             PreparedStatement comando = con.prepareStatement("SELECT * FROM veiculo WHERE id = ?")) {
             
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
+            comando.setInt(1, id);
+            ResultSet rs = comando.executeQuery();
             
             if (rs.next()) {
                 return extrairVeiculoDoResultSet(rs);
@@ -125,26 +116,24 @@ public class VeiculoDAO implements IVeiculoDAO {
 
     // Atualizar dados de um veículo existente
     public boolean atualizar(Veiculo veiculo, int idConcessionaria) {
-        String sql = "UPDATE veiculo SET marca=?, modelo=?, ano_fabricacao=?, ano_modelo=?, quilometragem=?, cor=?, combustivel=?, placa=?, preco=?, descricao=?, imagem_placeholder=?, id_concessionaria=? WHERE id=?";
-        
-        try (Connection conn = FabricaConexao.getConexao(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection con = FabricaConexao.getConexao(); 
+             PreparedStatement comando = con.prepareStatement("UPDATE veiculo SET marca=?, modelo=?, ano_fabricacao=?, ano_modelo=?, quilometragem=?, cor=?, combustivel=?, placa=?, preco=?, descricao=?, imagem_placeholder=?, id_concessionaria=? WHERE id=?")) {
             
-            stmt.setString(1, veiculo.getMarca());
-            stmt.setString(2, veiculo.getModelo());
-            stmt.setInt(3, veiculo.getAnoFabricacao());
-            stmt.setInt(4, veiculo.getAnoModelo());
-            stmt.setDouble(5, veiculo.getQuilometragem());
-            stmt.setString(6, veiculo.getCor());
-            stmt.setString(7, veiculo.getCombustivel());
-            stmt.setString(8, veiculo.getPlaca());
-            stmt.setDouble(9, veiculo.getPreco());
-            stmt.setString(10, veiculo.getDescricao());
-            stmt.setString(11, veiculo.getImagemPlaceholder());
-            stmt.setInt(12, idConcessionaria);
-            stmt.setInt(13, veiculo.getId());
+            comando.setString(1, veiculo.getMarca());
+            comando.setString(2, veiculo.getModelo());
+            comando.setInt(3, veiculo.getAnoFabricacao());
+            comando.setInt(4, veiculo.getAnoModelo());
+            comando.setDouble(5, veiculo.getQuilometragem());
+            comando.setString(6, veiculo.getCor());
+            comando.setString(7, veiculo.getCombustivel());
+            comando.setString(8, veiculo.getPlaca());
+            comando.setDouble(9, veiculo.getPreco());
+            comando.setString(10, veiculo.getDescricao());
+            comando.setString(11, veiculo.getImagemPlaceholder());
+            comando.setInt(12, idConcessionaria);
+            comando.setInt(13, veiculo.getId());
             
-            stmt.executeUpdate();
+            comando.executeUpdate();
             return true;
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar veículo: " + e.getMessage());
@@ -154,13 +143,11 @@ public class VeiculoDAO implements IVeiculoDAO {
 
     // Excluir anúncio
     public boolean excluir(int id) {
-        String sql = "DELETE FROM veiculo WHERE id=?";
-        
-        try (Connection conn = FabricaConexao.getConexao(); 
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection con = FabricaConexao.getConexao(); 
+             PreparedStatement comando = con.prepareStatement("DELETE FROM veiculo WHERE id=?")) {
             
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
+            comando.setInt(1, id);
+            comando.executeUpdate();
             return true;
         } catch (SQLException e) {
             System.err.println("Erro ao excluir veículo: " + e.getMessage());
@@ -170,15 +157,14 @@ public class VeiculoDAO implements IVeiculoDAO {
     
     //Marcar veículo como vendido
     public void marcarComoVendido(int id) {
-    String sql = "UPDATE veiculo SET status = 'VENDIDO' WHERE id = ?";
-    try (Connection conn = FabricaConexao.getConexao(); 
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
-        stmt.setInt(1, id);
-        stmt.executeUpdate();
-    } catch (SQLException e) {
-        System.err.println("Erro ao atualizar status: " + e.getMessage());
+        try (Connection con = FabricaConexao.getConexao(); 
+             PreparedStatement comando = con.prepareStatement("UPDATE veiculo SET status = 'VENDIDO' WHERE id = ?")) {
+            comando.setInt(1, id);
+            comando.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar status: " + e.getMessage());
+        }
     }
-}
     private Veiculo extrairVeiculoDoResultSet(ResultSet rs) throws SQLException {
         return Veiculo.getBuilder()
                 .comId(rs.getInt("id"))

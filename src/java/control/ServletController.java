@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// A URL "/controller.do" é o padrão ensinado no seu material para o Front Controller
+// Controlador Central (Front Controller)
 @WebServlet(name = "ServletController", urlPatterns = {"/controller.do"})
 public class ServletController extends HttpServlet {
 
@@ -28,36 +28,35 @@ public class ServletController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
 
         try {
-            // 1. Recupera a ação do usuário (ex: "CadastrarVeiculo", "ListarVeiculo")
+            // Recupera o parâmetro da ação do usuário
             String paramAction = request.getParameter("acao");
             
-            // Se não vier nenhuma ação, manda listar por padrão
+            // Define a ação padrão caso esteja vazia
             if (paramAction == null || paramAction.isEmpty()) {
                 paramAction = "ListarVeiculoTodos";
             }
 
-            // 2. Monta o nome completo da classe baseado no parâmetro
-            // Como estamos no pacote "control", ele vai procurar "control.CadastrarVeiculoAction", etc.
+            // Define o nome completo da classe correspondente
             String nomeDaClasse = "control." + paramAction + "Action";
 
-            // 3. Cria uma classe de representação usando Reflection (Design Pattern: Factory Method dinâmico)
+            // Carrega a classe dinamicamente via Reflection
             Class classeAction = Class.forName(nomeDaClasse);
 
-            // 4. Instancia a classe e faz o cast para a interface ICommand
+            // Cria a instância do comando
             ICommand commandAction = (ICommand) classeAction.getDeclaredConstructor().newInstance();
 
-            // 5. Executa a Action e recebe qual página JSP deve ser carregada a seguir
+            // Executa a ação e recupera a página de destino
             String pageDispatcher = commandAction.executar(request, response);
 
-            // 6. Redireciona o usuário para a página correta
+            // Redireciona o usuário para a página de destino
             RequestDispatcher rd = request.getRequestDispatcher(pageDispatcher);
             rd.forward(request, response);
 
         } catch (Exception e) {
             System.err.println("Erro no Front Controller: " + e.getMessage());
-            e.printStackTrace(); // Imprime o erro no console do NetBeans para ajudar a debugar
+            e.printStackTrace();
             
-            // Em caso de erro, manda para a página inicial
+            // Redireciona para a página inicial em caso de erro
             RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
             request.setAttribute("erro", e.getMessage());
             rd.forward(request, response);
